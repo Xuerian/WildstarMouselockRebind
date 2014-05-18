@@ -47,6 +47,7 @@ else {
   Click Down
   KeyWait, LButton
   Click Up
+  return
 }
 
 $RButton::
@@ -60,4 +61,5 @@ else {
   Click right Down
   KeyWait, RButton
   Click right Up
+  return
 }
