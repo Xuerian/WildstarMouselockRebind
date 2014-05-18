@@ -1,10 +1,10 @@
 ﻿#NoEnv
 SendMode Input
-; Does not interact with client at all
-; Reads color of pixels at top left of screen which ActionStar sets according to current mouselock state.
+; Does not interact with client at all, no hooks
+; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
 ; Expects Windows 8.1 windowed or borderless-windowed
 
-; Keys you want pressed
+; Desired binds
 Left_Click = 1
 Right_Click = -
 
