@@ -37,27 +37,27 @@ IfWinActive, WildStar
 #IfWinActive, WildStar
 
 $LButton::
-If (state == 1){
+If (state == 1) {
   Send, {%Left_Click% Down}
   KeyWait, LButton
   Send, {%Left_Click% Up}
   return
 }
-else
+else {
   Click Down
   KeyWait, LButton
   Click Up
-Return
+}
 
 $RButton::
-If (state == 1){
+If (state == 1) {
   Send, {%Right_Click% Down}
   KeyWait, RButton
   Send, {%Right_Click% Up}
   Return
 }
-else
-  Click Down
+else {
+  Click right Down
   KeyWait, RButton
-  Click Up
-Return
+  Click right Up
+}
