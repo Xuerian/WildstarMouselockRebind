@@ -8,11 +8,11 @@ SendMode Input
 Left_Click = 1
 Right_Click = -
 
-state := 0
-
 ; Color reading timer
 SetTimer, ActionStarPulse, 250
 return
+
+state := 0
 
 ActionStarPulse:
 IfWinActive, WildStar
@@ -24,7 +24,6 @@ IfWinActive, WildStar
 	else
 		PixelGetColor, color, X+2, Y+2
 
-	
 	if color = 0x00FF00
 		state := 1
 	else
