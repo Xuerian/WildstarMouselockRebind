@@ -12,23 +12,36 @@ Right_Click = -
 SetTimer, ActionStarPulse, 250
 return
 
-state := 0
+state := false
+intent := false
 
 ActionStarPulse:
 IfWinActive, WildStar
 {
+	; Resume lock when refocused
+	if (state == false && intent == true)
+		Send, {F7}
 	WinGetPos, X, Y
 	WinGet, style, Style
-	if style = 0x15CF0000
+	if (style == 0x15CF0000)
 		PixelGetColor, color, X+16, Y+40
 	else
 		PixelGetColor, color, X+2, Y+2
 
-	if color = 0x00FF00
-		state := 1
-	else
-		state := 0
+	if (color == 0x00FF00) {
+		state := true
+		intent := true
+	}
+	else {
+		state := false
+		intent := false
+	}
 	return
+}
+; Release lock when focus lost
+else if (state == true) {
+	state := false
+	ControlSend, , {F8}, WildStar
 }
 
 
@@ -36,7 +49,7 @@ IfWinActive, WildStar
 #IfWinActive, WildStar
 
 $LButton::
-If (state == 1) {
+If (state == true) {
   Send, {%Left_Click% Down}
   KeyWait, LButton
   Send, {%Left_Click% Up}
@@ -50,7 +63,7 @@ else {
 }
 
 $RButton::
-If (state == 1) {
+If (state == true) {
   Send, {%Right_Click% Down}
   KeyWait, RButton
   Send, {%Right_Click% Up}
