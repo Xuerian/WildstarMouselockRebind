@@ -20,7 +20,7 @@ IfWinActive, WildStar
 {
 	; Resume lock when refocused after automatically unlocking
 	if (state == false && intent == true)
-		Send, {F7}
+		ControlSend, , {F7}, WildStar
 	
 	; Read color
 	WinGetPos, X, Y
