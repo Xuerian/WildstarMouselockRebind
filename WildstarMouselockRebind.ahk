@@ -25,7 +25,7 @@ IfWinActive, WildStar
 	; Read color
 	WinGetPos, X, Y
 	WinGet, style, Style
-	if (style == 0x15CF0000)
+	if (style & 0x800000)
 		PixelGetColor, color, X+16, Y+40
 	else
 		PixelGetColor, color, X+2, Y+2
