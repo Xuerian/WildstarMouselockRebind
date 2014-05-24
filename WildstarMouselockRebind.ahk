@@ -23,12 +23,11 @@ IfWinActive, WildStar
 		ControlSend, , {F7}, WildStar
 	
 	; Read color
-	WinGetPos, X, Y
 	WinGet, style, Style
 	if (style & 0x800000)
-		PixelGetColor, color, X+16, Y+40
+		PixelGetColor, color, 9, 31
 	else
-		PixelGetColor, color, X+2, Y+2
+		PixelGetColor, color, 3, 3
 	
 	; Update intent and state
 	if (color == 0x00FF00) {
