@@ -1,5 +1,7 @@
 ﻿#NoEnv
 SendMode Input
+#InstallKeybdHook
+#UseHook 
 ; Does not interact with client at all, no hooks
 ; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
 ; Tested with Windows 8.1 windowed and borderless-windowed
@@ -51,6 +53,10 @@ else if (state == true) {
 #IfWinActive, WildStar
 
 $LButton::
+^$LButton::
+!$LBUTTON::
++$LBUTTON::
+!^$LBUTTON::
 If (state == true) {
   Send, {%Left_Click% Down}
   KeyWait, LButton
@@ -65,6 +71,10 @@ else {
 }
 
 $RButton::
+^$RButton::
+!$RBUTTON::
++$RBUTTON::
+!^$RBUTTON::
 If (state == true) {
   Send, {%Right_Click% Down}
   KeyWait, RButton
