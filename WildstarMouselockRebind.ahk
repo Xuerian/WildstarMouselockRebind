@@ -29,8 +29,8 @@ IfWinActive, WildStar
 	if (style & 0x800000)
 		PixelGetColor, color, 9, 31
 	else
-		PixelGetColor, color, 3, 3
-	
+		PixelGetColor, color, 2, 2
+		
 	; Update intent and state
 	if (color == 0x00FF00) {
 		state := true
