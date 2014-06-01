@@ -1,4 +1,8 @@
-﻿#NoEnv
+﻿; TODO: WinWait instead of polling
+; TODO: Scan for pixel initially and provide suitable feedback if not found
+; TODO: Provide for a custom lock location by defocusing wildstar, positioning the mouse, and locking it before returning focus
+
+#NoEnv
 SendMode Input
 #InstallKeybdHook
 #UseHook 
@@ -12,11 +16,28 @@ GroupAdd, wildstar, ahk_exe Wildstar64.exe
 Left_Click = 1
 Right_Click = -
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; DEBUG
+; Change this to DEBUG = true if helping to fix issues.
+DEBUG = true
+
+DebugPrint( out ) {
+	if (DEBUG == true)
+		return
+	FileAppend, %out%`n, %A_Desktop%\MouselockRebind_debug.txt
+	if (ErrorLevel == 1)
+		MsgBox Could not write to %A_Desktop%\MouselockRebind_debug.txt
+}
+
+DebugPrint("Starting up")
+
 ; Color reading timer
 SetTimer, ActionStarPulse, 250
 return
 
+; State is the current reading of the in-game indicator pixel
 state := false
+; Intent is the assumed state the game is in while tabbed out (To get around mouselock location bugs)
 intent := false
 
 ActionStarPulse:
@@ -28,9 +49,9 @@ IfWinActive, ahk_group wildstar
 	
 	; Read color
 	WinGet, style, Style
-	if (style & 0x800000)
+	if (style & 0x800000) ; Windowed mode
 		PixelGetColor, color, 9, 31
-	else
+	else ; Borderless windowed
 		PixelGetColor, color, 2, 2
 		
 	; Update intent and state
@@ -52,6 +73,7 @@ else if (state == true) {
 
 
 ; Mouse remaps
+; Include all modifier states, it would be nice if this looked less redundant
 #IfWinActive, ahk_group wildstar
 
 $LButton::
