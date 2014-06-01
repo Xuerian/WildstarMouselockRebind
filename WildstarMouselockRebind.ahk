@@ -80,6 +80,8 @@ $LButton::
 ^$LButton::
 !$LBUTTON::
 +$LBUTTON::
++!$LBUTTON::
++^$LBUTTON::
 !^$LBUTTON::
 If (state == true) {
   Send, {%Left_Click% Down}
@@ -98,6 +100,8 @@ $RButton::
 ^$RButton::
 !$RBUTTON::
 +$RBUTTON::
++!$RBUTTON::
++^$RBUTTON::
 !^$RBUTTON::
 If (state == true) {
   Send, {%Right_Click% Down}
