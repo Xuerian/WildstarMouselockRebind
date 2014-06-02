@@ -1,4 +1,23 @@
-﻿; TODO: Scan for pixel initially and provide suitable feedback if not found
+﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; MOUSE BINDINGS
+;;;; Change to whatever you want.
+;;;; Or just rebind these keys in game (easier)
+Left_Click = 1
+Right_Click = 2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; DEBUG
+;;;; Change this to DEBUG := true if helping to fix issues.
+DEBUG := false
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;; Don't change anything below this line
+
+
+
+
+
 ; TODO: Provide for a custom lock location by defocusing wildstar, positioning the mouse, and locking it before returning focus
 
 #NoEnv
@@ -11,18 +30,6 @@ SendMode Input
 ; Tested with Windows 8.1 windowed and borderless-windowed
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; MOUSE BINDINGS
-; Change to whatever you want.
-Left_Click = 1
-Right_Click = -
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; DEBUG
-; Change this to DEBUG = true if helping to fix issues.
-DEBUG := false
 
 
 DebugPrint( params* ) {
