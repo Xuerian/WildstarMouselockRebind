@@ -115,13 +115,6 @@ Loop {
 		; Wait for unfocus
 		WinWaitNotActive, ahk_group wildstar
 		{
-			if (state) {
-				ControlSend, , {F8}, ahk_group wildstar
-				DebugPrint("[ALT-TAB] Unlocking")
-			}
-			DebugPrint("[WINDOW] Inactive")
-			state := false
-			SetTimer, UpdateState, Off
 		}
 	}
 }
@@ -129,6 +122,17 @@ Loop {
 return
 
 UpdateState:
+	if not WinActive("ahk_group wildstar") {
+		if (state) {
+			ControlSend, , {F8}, ahk_group wildstar
+			DebugPrint("[ALT-TAB] Unlocking")
+		}
+		DebugPrint("[WINDOW] Inactive")
+		state := false
+		SetTimer, UpdateState, Off
+		return
+	}
+	
 	; Check pixel status
 	if (borderless)
 		pixel_status := GetPixelStatus(1, 1)
