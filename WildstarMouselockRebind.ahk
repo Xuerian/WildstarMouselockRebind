@@ -114,7 +114,7 @@ Loop {
 			pixel_status := GetPixelStatus(8, 31)
 		if (pixel_status == 0) {
 			DebugPrint("[ERROR] Failed to find pixel on focus")
-			SetTimer, UpdateState, Off
+			; SetTimer, UpdateState, Off
 		}
 		
 		DebugPrint("[WINDOW] Active", borderless ? "Borderless" : "Normal window")
