@@ -3,7 +3,7 @@
 ;;;; Change to whatever you want.
 ;;;; Or just rebind these keys in game (easier)
 Left_Click = 1
-Right_Click = 2
+Right_Click = -
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; DEBUG
