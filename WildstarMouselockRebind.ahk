@@ -163,7 +163,6 @@ UpdateState:
 return
 
 ; Mouse remaps
-; Include all modifier states, it would be nice if this looked less redundant
 #IfWinActive, ahk_group wildstar
 
 *LButton::
@@ -193,3 +192,22 @@ else {
   Send, {blind}{RButton Up}
   return
 }
+
+; Directly pass other clicks through so we don't lose focus
+*MButton::
+  ControlClick, , ahk_group wildstar, , M, D
+  KeyWait, MButton
+  ControlClick, , ahk_group wildstar, , M, U
+return
+
+*XButton1::
+  ControlClick, , ahk_group wildstar, , X1, D
+  KeyWait, XButton1
+  ControlClick, , ahk_group wildstar, , X1, U
+return
+
+*XButton2::
+  ControlClick, , ahk_group wildstar, , X2, D
+  KeyWait, XButton2
+  ControlClick, , ahk_group wildstar, , X2, U
+return
