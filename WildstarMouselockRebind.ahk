@@ -164,42 +164,30 @@ return
 ; Include all modifier states, it would be nice if this looked less redundant
 #IfWinActive, ahk_group wildstar
 
-$LButton::
-^$LButton::
-!$LBUTTON::
-+$LBUTTON::
-+!$LBUTTON::
-+^$LBUTTON::
-!^$LBUTTON::
+*LButton::
 If (state) {
-  Send, {%Left_Click% Down}
+  Send, {blind}{%Left_Click% Down}
   KeyWait, LButton
-  Send, {%Left_Click% Up}
+  Send, {blind}{%Left_Click% Up}
   return
 }
 else {
-  Click Down
+  Send, {blind}{LButton Down}
   KeyWait, LButton
-  Click Up
+  Send, {blind}{LButton Up}
   return
 }
 
-$RButton::
-^$RButton::
-!$RBUTTON::
-+$RBUTTON::
-+!$RBUTTON::
-+^$RBUTTON::
-!^$RBUTTON::
+*RButton::
 If (state) {
-  Send, {%Right_Click% Down}
+  Send, {blind}{%Right_Click% Down}
   KeyWait, RButton
-  Send, {%Right_Click% Up}
-  Return
+  Send, {blind}{%Right_Click% Up}
+  return
 }
 else {
-  Click right Down
+  Send, {blind}{RButton Down}
   KeyWait, RButton
-  Click right Up
+  Send, {blind}{RButton Up}
   return
 }
