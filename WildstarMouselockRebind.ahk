@@ -33,19 +33,19 @@ GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
 
 DebugPrint( params* ) {
-	if (not DEBUG)
-		return
-		
-	if (params.MaxIndex() > 1) {
-		for index,param in params
-			str .= param . ", "
-		str := SubStr(str, 1, -2)
-	} else
-		str := params[1]
+  global DEBUG
+	if (DEBUG) {
+    if (params.MaxIndex() > 1) {
+      for index,param in params
+        str .= param . ", "
+      str := SubStr(str, 1, -2)
+    } else
+      str := params[1]
 
-	FileAppend, %A_Now%  %str%`n, %A_Desktop%\MouselockRebind_debug.txt
-	if (ErrorLevel == 1)
-		MsgBox Could not write to %A_Desktop%\MouselockRebind_debug.txt
+    FileAppend, %A_Now%  %str%`n, %A_Desktop%\MouselockRebind_debug.txt
+    if (ErrorLevel == 1)
+      MsgBox Could not write to %A_Desktop%\MouselockRebind_debug.txt    
+  }
 }
 
 HexStr( hex ) {
@@ -59,6 +59,7 @@ HexStr( hex ) {
 ; 1 = black
 ; 2 = green
 GetPixelStatus( x, y ) {
+  global DEBUG
 	PixelGetColor, color, x, y
 	if (color == 0x00FF00)
 		return 2
@@ -76,7 +77,8 @@ if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
 }
 
 if (DEBUG)
-	FileDelete, %A_Desktop%\MouselockRebind_debug.txt
+  FileDelete, %A_Desktop%\MouselockRebind_debug.txt
+
 DebugPrint("Starting up")
 
 ; State is the current reading of the in-game indicator pixel
