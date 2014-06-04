@@ -75,6 +75,17 @@ GetPixelStatus( x, y ) {
   return 0
 }
 
+
+
+LockCursor( Activate=false ) {
+  if Activate {
+    WinGetPos, x, y, w, h
+    VarSetCapacity(R,16,0),  NumPut(x,&R+0),NumPut(y,&R+4),NumPut(x+w,&R+8),NumPut(y+h,&R+12)
+    DllCall( "ClipCursor", UInt,&R )
+  } else
+    DllCall( "ClipCursor" )
+}
+
 if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
   Menu, Tray, Icon, %A_ScriptDir%\wildstar_icon.ico
 }
@@ -142,6 +153,7 @@ UpdateState:
     DebugPrint("[WINDOW] Inactive")
     state := false
     SetTimer, UpdateState, Off
+    LockCursor()
     return
   }
   
@@ -153,13 +165,17 @@ UpdateState:
   
   ; Act on status
   if (pixel_status == 2) { ; Green
-    if (state == false)
+    if (state == false) {
       DebugPrint("[STATE] Change: On")
+      LockCursor(true)
+    }
     state := true
     intent := true
   } else {
-    if (state)
+    if (state) {
+      LockCursor()
       DebugPrint("[STATE] Change: Off")
+    }
     state := false
     intent := false
   }
