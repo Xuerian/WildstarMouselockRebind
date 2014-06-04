@@ -29,6 +29,7 @@ DEBUG := false
 SendMode Input
 #InstallKeybdHook
 #UseHook
+#SingleInstance force
 
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
@@ -195,21 +196,20 @@ else {
   return
 }
 
-; Directly pass other clicks through so we don't lose focus
 *MButton::
-  ControlClick, , ahk_group wildstar, , M, D
+  Send, {blind}{= Down}
   KeyWait, MButton
-  ControlClick, , ahk_group wildstar, , M, U
+  Send, {blind}{= Up}
 return
 
 *XButton1::
-  ControlClick, , ahk_group wildstar, , X1, D
+  Send, {blind}{[ Down}
   KeyWait, XButton1
-  ControlClick, , ahk_group wildstar, , X1, U
+  Send, {blind}{[ Up}
 return
 
 *XButton2::
-  ControlClick, , ahk_group wildstar, , X2, D
+  Send, {blind}{] Down}
   KeyWait, XButton2
-  ControlClick, , ahk_group wildstar, , X2, U
+  Send, {blind}{] Up}
 return
