@@ -80,7 +80,7 @@ GetPixelStatus( x, y ) {
 LockCursor( Activate=false ) {
   if Activate {
     WinGetPos, x, y, w, h
-    VarSetCapacity(R,16,0),  NumPut(x+5,&R+0),NumPut(y+35,&R+4),NumPut(x+w-5,&R+8),NumPut(y+h-10,&R+12)
+    VarSetCapacity(R,16,0),  NumPut(x+10,&R+0),NumPut(y+35,&R+4),NumPut(x+w-10,&R+8),NumPut(y+h-10,&R+12)
     DllCall( "ClipCursor", UInt,&R )
   } else
     DllCall( "ClipCursor" )
