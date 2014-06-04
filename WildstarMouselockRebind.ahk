@@ -209,21 +209,3 @@ return
     Send, {blind}{RButton Up}
   }
 return
-
-*MButton::
-  Send, {blind}{= Down}
-  KeyWait, MButton
-  Send, {blind}{= Up}
-return
-
-*XButton1::
-  Send, {blind}{[ Down}
-  KeyWait, XButton1
-  Send, {blind}{[ Up}
-return
-
-*XButton2::
-  Send, {blind}{] Down}
-  KeyWait, XButton2
-  Send, {blind}{] Up}
-return
