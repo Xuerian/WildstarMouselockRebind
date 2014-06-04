@@ -1,7 +1,6 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; MOUSE BINDINGS
-;;;; Change to whatever you want.
-;;;; Or just rebind these keys in game (easier)
+;;;; I suggest just changing what these keys do in-game and not here.
 Left_Click = 1
 Right_Click = -
 
@@ -16,6 +15,12 @@ DEBUG := false
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; MouselockRebind
+;
+; Does not interact with client at all, no hooks
+; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
+; Tested with Windows 8.1 windowed and borderless-windowed
 
 
 ; TODO: Provide for a custom lock location by defocusing wildstar, positioning the mouse, and locking it before returning focus
@@ -25,9 +30,6 @@ SendMode Input
 #InstallKeybdHook
 #UseHook
 
-; Does not interact with client at all, no hooks
-; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
-; Tested with Windows 8.1 windowed and borderless-windowed
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
