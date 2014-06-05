@@ -77,13 +77,16 @@ GetPixelStatus( x, y ) {
 
 
 
-LockCursor( Activate=false ) {
+LockCursor( Activate=false, Offset=5 ) {
   if Activate {
-    WinGetPos, x, y, w, h
-    VarSetCapacity(R,16,0),  NumPut(x+10,&R+0),NumPut(y+35,&R+4),NumPut(x+w-10,&R+8),NumPut(y+h-10,&R+12)
-    DllCall( "ClipCursor", UInt,&R )
+    WinGetPos, x, y, w, h, ahk_group wildstar
+    x1 := x + round(w/2)
+    y1 := y + round(h/2) - 50
+    ; VarSetCapacity(R,16,0),  NumPut(x+10,&R+0),NumPut(y+35,&R+4),NumPut(x+w-10,&R+8),NumPut(y+h-10,&R+12)
+    VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
+    DllCall( "ClipCursor", UInt, &R )
   } else
-    DllCall( "ClipCursor" )
+    DllCall( "ClipCursor", UInt, 0 )
 }
 
 if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
@@ -103,7 +106,7 @@ intent := false
 borderless := true
 
 ; State update timer
-SetTimer, UpdateState, 250
+SetTimer, UpdateState, 50
 SetTimer, UpdateState, Off
 
 ; Timer control and alt-tab locking/unlocking
@@ -167,7 +170,7 @@ UpdateState:
   if (pixel_status == 2) { ; Green
     if (state == false) {
       DebugPrint("[STATE] Change: On")
-      LockCursor(true)
+      LockCursor(true, 300)
     }
     state := true
     intent := true
@@ -175,10 +178,13 @@ UpdateState:
     DebugPrint("[FIX] Recentering cursor")
     state := false
     WinGetPos, x, y, w, h
+    LockCursor(true)
+    DllCall("SetCursorPos", int, w/2 + 10, int, h/2 - 50)
     ControlSend, , {F8}, ahk_group wildstar
     Sleep, 10
-    MouseMove, w/2, h/2 - 50
-    ControlSend, , {F7}
+    ;MouseMove, w/2, h/2 - 50
+    Sleep, 20
+    ControlSend, , {F9}
   } else {
     if (state) {
       DebugPrint("[STATE] Change: Off")
