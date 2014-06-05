@@ -180,14 +180,13 @@ UpdateState:
     DebugPrint("[FIX] Recentering cursor")
     state := false
     ; Lock cursor so movement doesn't disrupt it
-    WinGetPos, x, y, w, h
     LockCursor(true)
     ; Forcefully recenter cursor, possibly redundant
+    WinGetPos, x, y, w, h
     DllCall("SetCursorPos", int, w/2 + 10, int, h/2 - 50)
     ; Send release signal
     ControlSend, , {F8}, ahk_group wildstar
     ; Wait for wildstar to detect and release mouselock
-    Sleep, 10
     Sleep, 20
     ; Re-lock mouse (Confirming clean)
     ControlSend, , {F9}
