@@ -64,12 +64,12 @@ HexStr( hex ) {
 GetPixelStatus( x, y ) {
   global DEBUG
   PixelGetColor, color, x, y
-  if (color == 0x00FF00)
+  if (color == 0x00FF00) ; 0x003400
     return 2
+  if (color == 0xFF0000)
+    return 3
   else if (color == 0x000000)
     return 1
-  ;else if (color == 0x0D1315) ; Options screen
-  ; return 3
   if (DEBUG)
     DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
   return 0
@@ -171,6 +171,14 @@ UpdateState:
     }
     state := true
     intent := true
+  } else if (pixel_status == 3) { ; Blue, recenter cursor
+    DebugPrint("[FIX] Recentering cursor")
+    state := false
+    WinGetPos, x, y, w, h
+    ControlSend, , {F8}, ahk_group wildstar
+    Sleep, 10
+    MouseMove, w/2, h/2 - 50
+    ControlSend, , {F7}
   } else {
     if (state) {
       DebugPrint("[STATE] Change: Off")
