@@ -59,8 +59,9 @@ HexStr( hex ) {
 }
 
 ; 0 = Invalid
-; 1 = black
-; 2 = green
+; 1 = black (Inactive)
+; 2 = green (Lock active and clean)
+; 3 = blue (Lock active, needs reposition)
 GetPixelStatus( x, y ) {
   global DEBUG
   PixelGetColor, color, x, y
@@ -76,13 +77,11 @@ GetPixelStatus( x, y ) {
 }
 
 
-
 LockCursor( Activate=false, Offset=5 ) {
   if Activate {
     WinGetPos, x, y, w, h, ahk_group wildstar
     x1 := x + round(w/2)
     y1 := y + round(h/2) - 50
-    ; VarSetCapacity(R,16,0),  NumPut(x+10,&R+0),NumPut(y+35,&R+4),NumPut(x+w-10,&R+8),NumPut(y+h-10,&R+12)
     VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
     DllCall( "ClipCursor", UInt, &R )
   } else
@@ -148,6 +147,7 @@ Loop {
 return
 
 UpdateState:
+  ; Release and disable if not focused
   if not WinActive("ahk_group wildstar") {
     if (state) {
       ControlSend, , {F8}, ahk_group wildstar
@@ -170,6 +170,8 @@ UpdateState:
   if (pixel_status == 2) { ; Green
     if (state == false) {
       DebugPrint("[STATE] Change: On")
+      ; Lock loosely to prevent it leaving the screen
+      ; but allowing it to feel responsive while unlocking
       LockCursor(true, 300)
     }
     state := true
@@ -177,15 +179,19 @@ UpdateState:
   } else if (pixel_status == 3) { ; Blue, recenter cursor
     DebugPrint("[FIX] Recentering cursor")
     state := false
+    ; Lock cursor so movement doesn't disrupt it
     WinGetPos, x, y, w, h
     LockCursor(true)
+    ; Forcefully recenter cursor, possibly redundant
     DllCall("SetCursorPos", int, w/2 + 10, int, h/2 - 50)
+    ; Send release signal
     ControlSend, , {F8}, ahk_group wildstar
+    ; Wait for wildstar to detect and release mouselock
     Sleep, 10
-    ;MouseMove, w/2, h/2 - 50
     Sleep, 20
+    ; Re-lock mouse (Confirming clean)
     ControlSend, , {F9}
-  } else {
+  } else { ; Black, release cursor
     if (state) {
       DebugPrint("[STATE] Change: Off")
     }
