@@ -4,6 +4,13 @@
 Left_Click := 1
 Right_Click := "-"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; RETICLE OFFSET
+;;;; This value must match the settings in Lockdown to be useful.
+;;;; Must also be a positive number.
+ReticleOffset_Y := -100
+ReticleOffset_X := 0
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; DEBUG
 ;;;; Change this to DEBUG := true if helping to fix issues.
@@ -78,10 +85,12 @@ GetPixelStatus( x, y ) {
 
 
 LockCursor( Activate=false, Offset=5 ) {
+  global ReticleOffset_Y
+  global ReticleOffset_X
   if Activate {
     WinGetPos, x, y, w, h, ahk_group wildstar
-    x1 := x + round(w/2)
-    y1 := y + round(h/2) - 50
+    x1 := x + round(w/2 + ReticleOffset_X)
+    y1 := y + round(h/2 + ReticleOffset_Y)
     VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
     DllCall( "ClipCursor", UInt, &R )
   } else
