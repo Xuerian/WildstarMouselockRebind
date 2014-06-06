@@ -1,8 +1,8 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; MOUSE BINDINGS
 ;;;; I suggest just changing what these keys do in-game and not here.
-Left_Click = 1
-Right_Click = -
+Left_Click := 1
+Right_Click := "-"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; DEBUG
