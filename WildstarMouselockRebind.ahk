@@ -196,7 +196,7 @@ UpdateState:
     LockCursor(true)
     ; Forcefully recenter cursor, possibly redundant
     WinGetPos, x, y, w, h
-    DllCall("SetCursorPos", int, w/2 + 10, int, h/2 - 50)
+    DllCall("SetCursorPos", int, w/2 + 10 + ReticleOffset_X, int, h/2 + ReticleOffset_Y)
     ; Send release signal
     ControlSend, , {F8}, ahk_group wildstar
     ; Wait for wildstar to detect and release mouselock
