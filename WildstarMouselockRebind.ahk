@@ -11,6 +11,10 @@ Right_Click := "-"
 ReticleOffset_Y := -100
 ReticleOffset_X := 0
 
+
+;;;; Time in ms between checks, some report FPS hits with this too low
+UpdateInterval := 100
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; DEBUG
 ;;;; Change this to DEBUG := true if helping to fix issues.
@@ -114,7 +118,7 @@ intent := false
 borderless := true
 
 ; State update timer
-SetTimer, UpdateState, 50
+SetTimer, UpdateState, %UpdateInterval%
 SetTimer, UpdateState, Off
 
 ; Timer control and alt-tab locking/unlocking
