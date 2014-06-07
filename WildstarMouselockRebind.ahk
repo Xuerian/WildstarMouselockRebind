@@ -75,12 +75,14 @@ HexStr( hex ) {
 ; 3 = blue (Lock active, needs reposition)
 GetPixelStatus( x, y ) {
   global DEBUG
-  PixelGetColor, color, x, y
-  if (color == 0x00FF00) ; 0x003400
+  PixelSearch, , , x, y, x, y, 0x00FF00, 4, Fast
+  if (ErrorLevel == 0)
     return 2
-  if (color == 0xFF0000)
+  PixelSearch, , , x, y, x, y, 0xFF0000, 4, Fast
+  if (ErrorLevel == 0)
     return 3
-  else if (color == 0x000000)
+  PixelSearch, , , x, y, x, y, 0x000000, 4, Fast
+  if (ErrorLevel == 0)
     return 1
   if (DEBUG)
     DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
