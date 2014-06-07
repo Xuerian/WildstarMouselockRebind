@@ -13,7 +13,7 @@ ReticleOffset_X := 0
 
 
 ;;;; Time in ms between checks, some report FPS hits with this too low
-UpdateInterval := 100
+UpdateInterval := 50
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; DEBUG
