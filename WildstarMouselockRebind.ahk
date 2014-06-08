@@ -31,7 +31,7 @@ IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateD
 IniRead, AlternateDetectionModeTolerance, MouselockRebind_Options.ini, Tweaks, AlternateDetectionModeTolerance, 4
 IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
 
-IniStrToBool(str) {
+IniStrToBool( str ) {
   if (str == 1 or str == "true" or str == "yes")
     return true
   return false
