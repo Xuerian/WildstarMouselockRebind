@@ -42,13 +42,11 @@ IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateD
 IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
 
 ; Correct option types
-; ReticleOffset_Y := ReticleOffset_Y + 0.0 ; Float
-; ReticleOffset_X := ReticleOffset_X + 0.0 ; Float
-; UpdateInterval := UpdateInterval + 0 ; Int
-; AlternateDetectionMode := %AlternateDetectionMode% ; Bool
-; DEBUG := %DEBUG% ; Bool
-
-
+ReticleOffset_Y := ReticleOffset_Y + 0.0 ; Float
+ReticleOffset_X := ReticleOffset_X + 0.0 ; Float
+UpdateInterval := UpdateInterval + 0 ; Int
+AlternateDetectionMode := %AlternateDetectionMode% ; Bool
+DEBUG := %DEBUG% ; Bool
 
 DebugPrint( params* ) {
   global DEBUG
