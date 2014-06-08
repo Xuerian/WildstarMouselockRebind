@@ -21,17 +21,6 @@ SendMode Input
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
-; Initialize options
-if (FileExist("MouselockRebind_Options.ini") == "") {
-  IniWrite, 1, MouselockRebind_Options.ini, MouseActions, Left_Click
-  IniWrite, -, MouselockRebind_Options.ini, MouseActions, Right_Click
-  IniWrite, -100, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
-  IniWrite, 0, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
-  IniWrite, 100, MouselockRebind_Options.ini, Tweaks, UpdateInterval
-  IniWrite, false, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
-  IniWrite, false, MouselockRebind_Options.ini, Tweaks, DEBUG
-}
-
 ; Read options
 IniRead, Left_Click, MouselockRebind_Options.ini, MouseActions, Left_Click, 1
 IniRead, Right_Click, MouselockRebind_Options.ini, MouseActions, Right_Click, -
@@ -47,6 +36,15 @@ ReticleOffset_X := ReticleOffset_X + 0.0 ; Float
 UpdateInterval := UpdateInterval + 0 ; Int
 AlternateDetectionMode := %AlternateDetectionMode% ; Bool
 DEBUG := %DEBUG% ; Bool
+
+; Write out options to initialize any missing defaults
+IniWrite, %Left_Click%, MouselockRebind_Options.ini, MouseActions, Left_Click
+IniWrite, %Right_Click%, MouselockRebind_Options.ini, MouseActions, Right_Click
+IniWrite, %ReticleOffset_Y%, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
+IniWrite, %ReticleOffset_X%, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
+IniWrite, %UpdateInterval%, MouselockRebind_Options.ini, Tweaks, UpdateInterval
+IniWrite, %AlternateDetectionMode%, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
+IniWrite, %DEBUG%, MouselockRebind_Options.ini, Tweaks, DEBUG
 
 DebugPrint( params* ) {
   global DEBUG
