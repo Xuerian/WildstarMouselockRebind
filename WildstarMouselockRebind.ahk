@@ -28,6 +28,7 @@ IniRead, ReticleOffset_Y, MouselockRebind_Options.ini, ReticlePosition, ReticleO
 IniRead, ReticleOffset_X, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X, 0
 IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval, 100
 IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode, false
+IniRead, AlternateDetectionModeTolerance, MouselockRebind_Options.ini, Tweaks, AlternateDetectionModeTolerance, 4
 IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
 
 IniStrToBool(str) {
@@ -41,6 +42,7 @@ ReticleOffset_Y := ReticleOffset_Y + 0 ; Int
 ReticleOffset_X := ReticleOffset_X + 0 ; Int
 UpdateInterval := UpdateInterval + 0 ; Int
 AlternateDetectionMode := IniStrToBool(AlternateDetectionMode) ; Bool
+AlternateDetectionModeTolerance := AlternateDetectionModeTolerance + 0 ; Int
 DEBUG := IniStrToBool(DEBUG) ; Bool
 
 ; Write out options to initialize any missing defaults
@@ -50,6 +52,7 @@ IniWrite, %ReticleOffset_Y%, MouselockRebind_Options.ini, ReticlePosition, Retic
 IniWrite, %ReticleOffset_X%, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
 IniWrite, %UpdateInterval%, MouselockRebind_Options.ini, Tweaks, UpdateInterval
 IniWrite, %AlternateDetectionMode%, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
+IniWrite, %AlternateDetectionModeTolerance%, MouselockRebind_Options.ini, Tweaks, AlternateDetectionModeTolerance
 IniWrite, %DEBUG%, MouselockRebind_Options.ini, Tweaks, DEBUG
 
 DebugPrint( params* ) {
@@ -82,14 +85,15 @@ HexStr( hex ) {
 GetPixelStatus( x, y ) {
   global DEBUG
   global AlternateDetectionMode
+  global AlternateDetectionModeTolerance
   if (AlternateDetectionMode) {
-    PixelSearch, , , x, y, x, y, 0x00FF00, 4, Fast
+    PixelSearch, , , x, y, x, y, 0x00FF00, %AlternateDetectionModeTolerance%, Fast
     if (ErrorLevel == 0)
       return 2
-    PixelSearch, , , x, y, x, y, 0xFF0000, 4, Fast
+    PixelSearch, , , x, y, x, y, 0xFF0000, %AlternateDetectionModeTolerance%, Fast
     if (ErrorLevel == 0)
       return 3
-    PixelSearch, , , x, y, x, y, 0x000000, 4, Fast
+    PixelSearch, , , x, y, x, y, 0x000000, %AlternateDetectionModeTolerance%, Fast
     if (ErrorLevel == 0)
       return 1
   } else {
