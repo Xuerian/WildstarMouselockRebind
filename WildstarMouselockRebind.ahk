@@ -33,13 +33,13 @@ if (FileExist("MouselockRebind_Options.ini") == "") {
 }
 
 ; Read options
-IniRead, Left_Click, MouselockRebind_Options.ini, MouseActions, Left_Click
-IniRead, Right_Click, MouselockRebind_Options.ini, MouseActions, Right_Click
-IniRead, ReticleOffset_Y, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
-IniRead, ReticleOffset_X, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
-IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval
-IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
-IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG
+IniRead, Left_Click, MouselockRebind_Options.ini, MouseActions, Left_Click, 1
+IniRead, Right_Click, MouselockRebind_Options.ini, MouseActions, Right_Click, -
+IniRead, ReticleOffset_Y, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y, -100
+IniRead, ReticleOffset_X, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X, 0
+IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval, 100
+IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode, false
+IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
 
 ; Correct option types
 ; ReticleOffset_Y := ReticleOffset_Y + 0.0 ; Float
