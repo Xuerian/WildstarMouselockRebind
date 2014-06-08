@@ -104,8 +104,10 @@ GetPixelStatus( x, y ) {
       return 3
     else if (color == 0x000000)
       return 1
-    if (DEBUG)
-      DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
+  }
+  if (DEBUG) {
+    PixelGetColor, color, x, y
+    DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
   }
   return 0
 }
