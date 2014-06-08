@@ -26,11 +26,15 @@ DEBUG := false
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; MouselockRebind
 ;
-; Does not interact with client at all, no hooks
+; Please change all options in MouselockRebind_Options.ini after script is run
+;
+; Interacts with Wildstar to the least degree possible.
 ; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
+; Presses F7, F8, and F9 to toggle mouselock status in game
+;
 ; Tested with Windows 8.1 windowed and borderless-windowed
 
 
