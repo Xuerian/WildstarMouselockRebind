@@ -1,31 +1,3 @@
-﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; MOUSE BINDINGS
-;;;; I suggest just changing what these keys do in-game and not here.
-Left_Click := 1
-Right_Click := "-"
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; RETICLE OFFSET
-;;;; This value must match the settings in Lockdown to be useful.
-;;;; Must also be a positive number.
-ReticleOffset_Y := -100
-ReticleOffset_X := 0
-
-
-;;;; Time in ms between checks, some report FPS hits with this too low
-UpdateInterval := 50
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; DEBUG
-;;;; Change this to DEBUG := true if helping to fix issues.
-DEBUG := false
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-;; Don't change anything below this line
-
-
-
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; MouselockRebind
 ;
@@ -48,6 +20,34 @@ SendMode Input
 
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
+
+; Initialize options
+if (FileExist("MouselockRebind_Options.ini") == "") {
+  IniWrite, 1, MouselockRebind_Options.ini, MouseActions, Left_Click
+  IniWrite, -, MouselockRebind_Options.ini, MouseActions, Right_Click
+  IniWrite, -100, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
+  IniWrite, 0, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
+  IniWrite, 100, MouselockRebind_Options.ini, Tweaks, UpdateInterval
+  IniWrite, false, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
+  IniWrite, false, MouselockRebind_Options.ini, Tweaks, DEBUG
+}
+
+; Read options
+IniRead, Left_Click, MouselockRebind_Options.ini, MouseActions, Left_Click
+IniRead, Right_Click, MouselockRebind_Options.ini, MouseActions, Right_Click
+IniRead, ReticleOffset_Y, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
+IniRead, ReticleOffset_X, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
+IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval
+IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
+IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG
+
+; Correct option types
+; ReticleOffset_Y := ReticleOffset_Y + 0.0 ; Float
+; ReticleOffset_X := ReticleOffset_X + 0.0 ; Float
+; UpdateInterval := UpdateInterval + 0 ; Int
+; AlternateDetectionMode := %AlternateDetectionMode% ; Bool
+; DEBUG := %DEBUG% ; Bool
+
 
 
 DebugPrint( params* ) {
@@ -79,17 +79,22 @@ HexStr( hex ) {
 ; 3 = blue (Lock active, needs reposition)
 GetPixelStatus( x, y ) {
   global DEBUG
-  PixelSearch, , , x, y, x, y, 0x00FF00, 4, Fast
-  if (ErrorLevel == 0)
-    return 2
-  PixelSearch, , , x, y, x, y, 0xFF0000, 4, Fast
-  if (ErrorLevel == 0)
-    return 3
-  PixelSearch, , , x, y, x, y, 0x000000, 4, Fast
-  if (ErrorLevel == 0)
-    return 1
-  if (DEBUG)
-    DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
+  global AlternateDetectionMode
+  if (AlternateDetectionMode) {
+    PixelSearch, , , x, y, x, y, 0x00FF00, 4, Fast
+    if (ErrorLevel == 0)
+      return 2
+    PixelSearch, , , x, y, x, y, 0xFF0000, 4, Fast
+    if (ErrorLevel == 0)
+      return 3
+    PixelSearch, , , x, y, x, y, 0x000000, 4, Fast
+    if (ErrorLevel == 0)
+      return 1
+  } else {
+
+    if (DEBUG)
+      DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
+  }
   return 0
 }
 
