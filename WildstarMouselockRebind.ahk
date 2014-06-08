@@ -30,12 +30,18 @@ IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval, 10
 IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode, false
 IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
 
+IniStrToBool(str) {
+  if (str == 1 or str == "true" or str == "yes")
+    return true
+  return false
+}
+
 ; Correct option types
-ReticleOffset_Y := ReticleOffset_Y + 0.0 ; Float
-ReticleOffset_X := ReticleOffset_X + 0.0 ; Float
+ReticleOffset_Y := ReticleOffset_Y + 0 ; Int
+ReticleOffset_X := ReticleOffset_X + 0 ; Int
 UpdateInterval := UpdateInterval + 0 ; Int
-AlternateDetectionMode := %AlternateDetectionMode% ; Bool
-DEBUG := %DEBUG% ; Bool
+AlternateDetectionMode := IniStrToBool(AlternateDetectionMode) ; Bool
+DEBUG := IniStrToBool(DEBUG) ; Bool
 
 ; Write out options to initialize any missing defaults
 IniWrite, %Left_Click%, MouselockRebind_Options.ini, MouseActions, Left_Click
