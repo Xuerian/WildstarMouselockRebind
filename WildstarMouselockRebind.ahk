@@ -22,14 +22,15 @@ GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
 ; Read options
-IniRead, Left_Click, MouselockRebind_Options.ini, MouseActions, Left_Click, 1
-IniRead, Right_Click, MouselockRebind_Options.ini, MouseActions, Right_Click, -
-IniRead, ReticleOffset_Y, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y, -100
-IniRead, ReticleOffset_X, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X, 0
-IniRead, UpdateInterval, MouselockRebind_Options.ini, Tweaks, UpdateInterval, 100
-IniRead, AlternateDetectionMode, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode, false
-IniRead, AlternateDetectionModeTolerance, MouselockRebind_Options.ini, Tweaks, AlternateDetectionModeTolerance, 4
-IniRead, DEBUG, MouselockRebind_Options.ini, Tweaks, DEBUG, false
+optfile := "MouselockRebind_Options.ini"
+IniRead, Left_Click, %optfile%, MouseActions, Left_Click, 1
+IniRead, Right_Click, %optfile%, MouseActions, Right_Click, -
+IniRead, ReticleOffset_Y, %optfile%, ReticlePosition, ReticleOffset_Y, -100
+IniRead, ReticleOffset_X, %optfile%, ReticlePosition, ReticleOffset_X, 0
+IniRead, UpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
+IniRead, AlternateDetectionMode, %optfile%, Tweaks, AlternateDetectionMode, false
+IniRead, AlternateDetectionModeTolerance, %optfile%, Tweaks, AlternateDetectionModeTolerance, 4
+IniRead, DEBUG, %optfile%, Tweaks, DEBUG, false
 
 IniStrToBool( str ) {
   if (str == 1 or str == "true" or str == "yes")
@@ -46,14 +47,14 @@ AlternateDetectionModeTolerance := AlternateDetectionModeTolerance + 0 ; Int
 DEBUG := IniStrToBool(DEBUG) ; Bool
 
 ; Write out options to initialize any missing defaults
-IniWrite, %Left_Click%, MouselockRebind_Options.ini, MouseActions, Left_Click
-IniWrite, %Right_Click%, MouselockRebind_Options.ini, MouseActions, Right_Click
-IniWrite, %ReticleOffset_Y%, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_Y
-IniWrite, %ReticleOffset_X%, MouselockRebind_Options.ini, ReticlePosition, ReticleOffset_X
-IniWrite, %UpdateInterval%, MouselockRebind_Options.ini, Tweaks, UpdateInterval
-IniWrite, %AlternateDetectionMode%, MouselockRebind_Options.ini, Tweaks, AlternateDetectionMode
-IniWrite, %AlternateDetectionModeTolerance%, MouselockRebind_Options.ini, Tweaks, AlternateDetectionModeTolerance
-IniWrite, %DEBUG%, MouselockRebind_Options.ini, Tweaks, DEBUG
+IniWrite, %Left_Click%, %optfile%, MouseActions, Left_Click
+IniWrite, %Right_Click%, %optfile%, MouseActions, Right_Click
+IniWrite, %ReticleOffset_Y%, %optfile%, ReticlePosition, ReticleOffset_Y
+IniWrite, %ReticleOffset_X%, %optfile%, ReticlePosition, ReticleOffset_X
+IniWrite, %UpdateInterval%, %optfile%, Tweaks, UpdateInterval
+IniWrite, %AlternateDetectionMode%, %optfile%, Tweaks, AlternateDetectionMode
+IniWrite, %AlternateDetectionModeTolerance%, %optfile%, Tweaks, AlternateDetectionModeTolerance
+IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
 
 DebugPrint( params* ) {
   global DEBUG
