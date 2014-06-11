@@ -250,7 +250,9 @@ ReloadScript:
 return
 
 EditSettings:
-  Run, notepad %optfile%
+  MsgBox, , MouselockRebind Options, Make your changes then save when closing Notepad, 5
+  RunWait, notepad %optfile%
+  Reload
 return
 
 ExitScript:
