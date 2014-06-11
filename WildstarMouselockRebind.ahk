@@ -274,7 +274,7 @@ return
 return
 
 *RButton::
-  If (state) {
+  If (state and Right_Click != "") {
     Send, {blind}{%Right_Click% Down}
     KeyWait, RButton
     Send, {blind}{%Right_Click% Up}
