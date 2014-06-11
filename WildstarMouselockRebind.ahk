@@ -261,7 +261,7 @@ return
 #IfWinActive, ahk_group wildstar
 
 *LButton::
-  If (state) {
+  If (state and Left_Click != "") {
     Send, {blind}{%Left_Click% Down}
     KeyWait, LButton
     Send, {blind}{%Left_Click% Up}
