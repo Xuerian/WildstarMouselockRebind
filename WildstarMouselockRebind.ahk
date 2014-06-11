@@ -131,6 +131,12 @@ if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
   Menu, Tray, Icon, %A_ScriptDir%\wildstar_icon.ico
 }
 
+Menu, Tray, NoStandard
+Menu, Tray, Add, Reload, ReloadScript
+Menu, Tray, Add, Settings, EditSettings
+Menu, Tray, Add, Exit, ExitScript
+Menu, Tray, Default, Settings
+
 if (DEBUG)
   FileDelete, %A_Desktop%\MouselockRebind_debug.txt
 
@@ -237,6 +243,18 @@ UpdateState:
     state := false
     intent := false
   }
+return
+
+ReloadScript:
+  Reload
+return
+
+EditSettings:
+  Run, notepad %optfile%
+return
+
+ExitScript:
+  ExitApp
 return
 
 ; Mouse remaps
