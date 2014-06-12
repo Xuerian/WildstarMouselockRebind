@@ -24,8 +24,8 @@ GroupAdd, wildstar, ahk_exe Wildstar64.exe
 ; Read options
 SetWorkingDir %A_ScriptDir% ; Some people's save files landed in odd places..
 optfile := "MouselockRebind_Options.ini"
-IniRead, Left_Click, %optfile%, MouseActions, Left_Click, 1
-IniRead, Right_Click, %optfile%, MouseActions, Right_Click, -
+IniRead, Left_Click, %optfile%, MouseActions, Left_Click, -
+IniRead, Right_Click, %optfile%, MouseActions, Right_Click, =
 IniRead, ReticleOffset_Y, %optfile%, ReticlePosition, ReticleOffset_Y, -100
 IniRead, ReticleOffset_X, %optfile%, ReticlePosition, ReticleOffset_X, 0
 IniRead, UpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
