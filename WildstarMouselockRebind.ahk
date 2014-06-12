@@ -61,6 +61,7 @@ DebugPrint( params* ) {
   global DEBUG
   if (DEBUG) {
     if (params.MaxIndex() > 1) {
+      str := ""
       for index,param in params
         str .= param . ", "
       str := SubStr(str, 1, -2)
