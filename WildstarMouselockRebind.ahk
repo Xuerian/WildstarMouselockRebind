@@ -20,6 +20,7 @@ SetWorkingDir %A_ScriptDir% ; Some people's save files landed in odd places..
 optfile := "MouselockRebind_Options.ini"
 IniRead, Left_Click, %optfile%, MouseActions, Left_Click, -
 IniRead, Right_Click, %optfile%, MouseActions, Right_Click, =
+IniRead, Middle_Click, %optfile%, MouseActions, Middle_Click, %A_Space%
 IniRead, UpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
 IniRead, AlternateDetectionMode, %optfile%, Tweaks, AlternateDetectionMode, false
 IniRead, AlternateDetectionModeTolerance, %optfile%, Tweaks, AlternateDetectionModeTolerance, 4
@@ -40,6 +41,7 @@ DEBUG := IniStrToBool(DEBUG) ; Bool
 ; Write out options to initialize any missing defaults
 IniWrite, %Left_Click%, %optfile%, MouseActions, Left_Click
 IniWrite, %Right_Click%, %optfile%, MouseActions, Right_Click
+IniWrite, %Middle_Click%, %optfile%, MouseActions, Middle_Click
 IniWrite, %UpdateInterval%, %optfile%, Tweaks, UpdateInterval
 IniWrite, %AlternateDetectionMode%, %optfile%, Tweaks, AlternateDetectionMode
 IniWrite, %AlternateDetectionModeTolerance%, %optfile%, Tweaks, AlternateDetectionModeTolerance
@@ -221,5 +223,18 @@ return
     Send, {blind}{RButton Down}
     KeyWait, RButton
     Send, {blind}{RButton Up}
+  }
+return
+
+*MButton::
+  If (state and Middle_Click != "") {
+    Send, {blind}{%Middle_Click% Down}
+    KeyWait, MButton
+    Send, {blind}{%Middle_Click% Up}
+  }
+  else {
+    Send, {blind}{MButton Down}
+    KeyWait, MButton
+    Send, {blind}{MButton Up}
   }
 return
