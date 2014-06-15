@@ -21,9 +21,9 @@ optfile := "MouselockRebind_Options.ini"
 IniRead, Left_Click, %optfile%, MouseActions, Left_Click, -
 IniRead, Right_Click, %optfile%, MouseActions, Right_Click, =
 IniRead, Middle_Click, %optfile%, MouseActions, Middle_Click, %A_Space%
-IniRead, UpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
-IniRead, AlternateDetectionMode, %optfile%, Tweaks, AlternateDetectionMode, false
-IniRead, AlternateDetectionModeTolerance, %optfile%, Tweaks, AlternateDetectionModeTolerance, 4
+IniRead, OptUpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
+IniRead, OptAlternateDetectionMode, %optfile%, Tweaks, AlternateDetectionMode, false
+IniRead, OptAlternateDetectionModeTolerance, %optfile%, Tweaks, AlternateDetectionModeTolerance, 4
 IniRead, DEBUG, %optfile%, Tweaks, DEBUG, false
 
 IniStrToBool( str ) {
@@ -33,19 +33,23 @@ IniStrToBool( str ) {
 }
 
 ; Correct option types
-UpdateInterval := UpdateInterval + 0 ; Int
-AlternateDetectionMode := IniStrToBool(AlternateDetectionMode) ; Bool
-AlternateDetectionModeTolerance := AlternateDetectionModeTolerance + 0 ; Int
+OptUpdateInterval := OptUpdateInterval + 0 ; Int
+OptAlternateDetectionMode := IniStrToBool(OptAlternateDetectionMode) ; Bool
+OptAlternateDetectionModeTolerance := OptAlternateDetectionModeTolerance + 0 ; Int
 DEBUG := IniStrToBool(DEBUG) ; Bool
 
 ; Write out options to initialize any missing defaults
 IniWrite, %Left_Click%, %optfile%, MouseActions, Left_Click
 IniWrite, %Right_Click%, %optfile%, MouseActions, Right_Click
 IniWrite, %Middle_Click%, %optfile%, MouseActions, Middle_Click
-IniWrite, %UpdateInterval%, %optfile%, Tweaks, UpdateInterval
-IniWrite, %AlternateDetectionMode%, %optfile%, Tweaks, AlternateDetectionMode
-IniWrite, %AlternateDetectionModeTolerance%, %optfile%, Tweaks, AlternateDetectionModeTolerance
+IniWrite, %OptUpdateInterval%, %optfile%, Tweaks, UpdateInterval
+IniWrite, %OptAlternateDetectionMode%, %optfile%, Tweaks, AlternateDetectionMode
+IniWrite, %OptAlternateDetectionModeTolerance%, %optfile%, Tweaks, AlternateDetectionModeTolerance
 IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
+
+; Useless for now
+ReticleOffset_X := 0
+ReticleOffset_Y := 0
 
 DebugPrint( params* ) {
   global DEBUG
@@ -73,22 +77,28 @@ HexStr( hex ) {
 
 ; 0 = Invalid
 ; 1 = black (Inactive)
-; 2 = green (Lock active)
+; 2 = green (Lock active and clean)
+; 3 = blue (Lock active, needs reposition)
 GetPixelStatus( x, y ) {
   global DEBUG
-  global AlternateDetectionMode
-  global AlternateDetectionModeTolerance
-  if (AlternateDetectionMode) {
-    PixelSearch, , , x, y, x, y, 0x00FF00, %AlternateDetectionModeTolerance%, Fast
+  global OptAlternateDetectionMode
+  global OptAlternateDetectionModeTolerance
+  if (OptAlternateDetectionMode) {
+    PixelSearch, , , x, y, x, y, 0x00FF00, %OptAlternateDetectionModeTolerance%, Fast
     if (ErrorLevel == 0)
       return 2
-    PixelSearch, , , x, y, x, y, 0x000000, %AlternateDetectionModeTolerance%, Fast
+    PixelSearch, , , x, y, x, y, 0xFF0000, %OptAlternateDetectionModeTolerance%, Fast
+    if (ErrorLevel == 0)
+      return 3
+    PixelSearch, , , x, y, x, y, 0x000000, %OptAlternateDetectionModeTolerance%, Fast
     if (ErrorLevel == 0)
       return 1
   } else {
     PixelGetColor, color, x, y
     if (color == 0x00FF00) ; 0x003400
       return 2
+    if (color == 0xFF0000)
+      return 3
     else if (color == 0x000000)
       return 1
   }
@@ -97,6 +107,20 @@ GetPixelStatus( x, y ) {
     DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
   }
   return 0
+}
+
+
+LockCursor( Activate=false, Offset=5 ) {
+  global ReticleOffset_Y
+  global ReticleOffset_X
+  if Activate {
+    WinGetPos, x, y, w, h, ahk_group wildstar
+    x1 := x + round(w/2 + ReticleOffset_X)
+    y1 := y + round(h/2 + ReticleOffset_Y)
+    VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
+    DllCall( "ClipCursor", UInt, &R )
+  } else
+    DllCall( "ClipCursor", UInt, 0 )
 }
 
 if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
@@ -116,17 +140,25 @@ DebugPrint("Starting up")
 
 ; State is the current reading of the in-game indicator pixel
 state := false
+; Intent is the assumed state the game is in while tabbed out
+intent := false
 
 borderless := true
 
 ; State update timer
-SetTimer, UpdateState, %UpdateInterval%
+SetTimer, UpdateState, %OptUpdateInterval%
 SetTimer, UpdateState, Off
 
 ; Timer control and alt-tab locking/unlocking
 Loop {
   WinWaitActive, ahk_group wildstar
   {
+    ; Resume lock when refocused after automatically unlocking
+    if (state == false && intent == true) {
+      ControlSend, , {F7}, ahk_group wildstar
+      DebugPrint("[ALT-TAB] Relocking")
+    }
+    
     ; Update window type
     WinGet, style, Style
     borderless := (NOT style & 0x800000)
@@ -157,9 +189,14 @@ return
 UpdateState:
   ; Release and disable if not focused
   if not WinActive("ahk_group wildstar") {
+    if (state) {
+      ControlSend, , {F8}, ahk_group wildstar
+      DebugPrint("[ALT-TAB] Unlocking")
+    }
     DebugPrint("[WINDOW] Inactive")
     state := false
     SetTimer, UpdateState, Off
+    LockCursor()
     return
   }
   
@@ -173,13 +210,34 @@ UpdateState:
   if (pixel_status == 2) { ; Green
     if (state == false) {
       DebugPrint("[STATE] Change: On")
+      ; Lock loosely to prevent it leaving the screen
+      ; but allowing it to feel responsive while unlocking
+      LockCursor(true, 300)
     }
     state := true
-  } else {
+    intent := true
+  } else if (pixel_status == 3) { ; Blue, recenter cursor
+    DebugPrint("[FIX] Recentering cursor")
+    state := false
+    ; Lock cursor so movement doesn't disrupt it
+    ;LockCursor(true)
+    ; Send release signal
+    ControlSend, , {F8}, ahk_group wildstar
+    Sleep, 10
+    ; Forcefully recenter cursor, possibly redundant
+    WinGetPos, x, y, w, h
+    DllCall("SetCursorPos", int, w/2 + 5 + ReticleOffset_X, int, h/2 + ReticleOffset_Y)
+    ; Wait for wildstar to detect and release mouselock
+    Sleep, 20
+    ; Re-lock mouse (Confirming clean)
+    ControlSend, , {F9}
+  } else { ; Black, release cursor
     if (state) {
       DebugPrint("[STATE] Change: Off")
     }
+    LockCursor()
     state := false
+    intent := false
   }
 return
 
