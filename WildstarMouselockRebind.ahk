@@ -4,6 +4,7 @@
 ; Please change all options in MouselockRebind_Options.ini after script is run
 ;
 ; Checks visibility of mouse cursor to determine lock status
+; Provides cursor re-centering and locking of cursor to screen, otherwise it would be much simpler.
 
 #NoEnv
 SendMode Input
@@ -102,8 +103,6 @@ state := false
 ; Intent is the assumed state the game is in while tabbed out
 intent := false
 
-borderless := true
-
 ; State update timer
 SetTimer, UpdateState, %OptUpdateInterval%
 SetTimer, UpdateState, Off
@@ -118,14 +117,10 @@ Loop {
       DebugPrint("[ALT-TAB] Relocking")
     }
     
-    ; Update window type
-    WinGet, style, Style
-    borderless := (NOT style & 0x800000)
-
     ; Activate polling
     SetTimer, UpdateState, On
 
-    DebugPrint("[WINDOW] Active", borderless ? "Borderless" : "Normal window")
+    DebugPrint("[WINDOW] Active")
     
     ; Wait for unfocus
     WinWaitNotActive, ahk_group wildstar
