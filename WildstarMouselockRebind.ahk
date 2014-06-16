@@ -21,6 +21,9 @@ optfile := "MouselockRebind_Options.ini"
 IniRead, Left_Click, %optfile%, MouseActions, Left_Click, -
 IniRead, Right_Click, %optfile%, MouseActions, Right_Click, =
 IniRead, Middle_Click, %optfile%, MouseActions, Middle_Click, %A_Space%
+IniRead, OptReticleOffset_Y, %optfile%, ReticlePosition, ReticleOffset_Y, -100
+IniRead, OptReticleOffset_X, %optfile%, ReticlePosition, ReticleOffset_X, 0
+IniRead, OptRecenterCursor, %optfile%, Tweaks, RecenterCursor, true
 IniRead, OptUpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
 IniRead, DEBUG, %optfile%, Tweaks, DEBUG, false
 
@@ -31,6 +34,9 @@ IniStrToBool( str ) {
 }
 
 ; Correct option types
+OptReticleOffset_Y := OptReticleOffset_Y + 0 ; Int
+OptReticleOffset_X := OptReticleOffset_X + 0 ; Int
+OptRecenterCursor := IniStrToBool(OptRecenterCursor) ; Bool
 OptUpdateInterval := OptUpdateInterval + 0 ; Int
 DEBUG := IniStrToBool(DEBUG) ; Bool
 
@@ -38,12 +44,11 @@ DEBUG := IniStrToBool(DEBUG) ; Bool
 IniWrite, %Left_Click%, %optfile%, MouseActions, Left_Click
 IniWrite, %Right_Click%, %optfile%, MouseActions, Right_Click
 IniWrite, %Middle_Click%, %optfile%, MouseActions, Middle_Click
+IniWrite, %OptReticleOffset_Y%, %optfile%, ReticlePosition, ReticleOffset_Y
+IniWrite, %OptReticleOffset_X%, %optfile%, ReticlePosition, ReticleOffset_X
+IniWrite, %OptRecenterCursor%, %optfile%, Tweaks, RecenterCursor
 IniWrite, %OptUpdateInterval%, %optfile%, Tweaks, UpdateInterval
 IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
-
-; Useless for now
-ReticleOffset_X := 0
-ReticleOffset_Y := 0
 
 DebugPrint( params* ) {
   global DEBUG
@@ -71,12 +76,12 @@ IsCursorVisible() {
 }
 
 LockCursor( Activate=false, Offset=5 ) {
-  global ReticleOffset_Y
-  global ReticleOffset_X
+  global OptReticleOffset_Y
+  global OptReticleOffset_X
   if Activate {
     WinGetPos, x, y, w, h, ahk_group wildstar
-    x1 := x + round(w/2 + ReticleOffset_X)
-    y1 := y + round(h/2 + ReticleOffset_Y)
+    x1 := x + round(w/2 + OptReticleOffset_X)
+    y1 := y + round(h/2 + OptReticleOffset_Y)
     VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
     DllCall( "ClipCursor", UInt, &R )
   } else
@@ -160,7 +165,7 @@ UpdateState:
       Sleep, 10
       ; Forcefully recenter cursor, possibly redundant
       WinGetPos, x, y, w, h
-      DllCall("SetCursorPos", int, w/2 + 5 + ReticleOffset_X, int, h/2 + ReticleOffset_Y)
+      DllCall("SetCursorPos", int, w/2 + 5 + OptReticleOffset_X, int, h/2 + OptReticleOffset_Y)
       ; Wait for wildstar to detect and release mouselock
       Sleep, 20
       ; Re-lock mouse
