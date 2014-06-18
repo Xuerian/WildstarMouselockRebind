@@ -3,8 +3,8 @@
 ;
 ; Please change all options in MouselockRebind_Options.ini after script is run
 ;
-; Interacts with Wildstar to the least degree possible.
-; Reads color of pixels at top left of screen which the MouselockIndicatorPixel addon sets according to GameLib.IsMouseLockOn()
+; Checks visibility of mouse cursor to determine lock status
+; Provides cursor re-centering and locking of cursor to screen, otherwise it would be much simpler.
 
 #NoEnv
 SendMode Input
@@ -15,15 +15,17 @@ SendMode Input
 GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
+AppDataWS := A_AppData . "\NCSoft\WildStar\"
+
 ; Read options
-SetWorkingDir %A_ScriptDir% ; Some people's save files landed in odd places..
-optfile := "MouselockRebind_Options.ini"
+optfile := AppDataWS . "AddonSaveData\MouselockRebind_Options.ini"
 IniRead, Left_Click, %optfile%, MouseActions, Left_Click, -
 IniRead, Right_Click, %optfile%, MouseActions, Right_Click, =
 IniRead, Middle_Click, %optfile%, MouseActions, Middle_Click, %A_Space%
+IniRead, OptReticleOffset_Y, %optfile%, ReticlePosition, ReticleOffset_Y, -100
+IniRead, OptReticleOffset_X, %optfile%, ReticlePosition, ReticleOffset_X, 0
+IniRead, OptRecenterCursor, %optfile%, Tweaks, RecenterCursor, true
 IniRead, OptUpdateInterval, %optfile%, Tweaks, UpdateInterval, 100
-IniRead, OptAlternateDetectionMode, %optfile%, Tweaks, AlternateDetectionMode, false
-IniRead, OptAlternateDetectionModeTolerance, %optfile%, Tweaks, AlternateDetectionModeTolerance, 4
 IniRead, DEBUG, %optfile%, Tweaks, DEBUG, false
 
 IniStrToBool( str ) {
@@ -33,25 +35,24 @@ IniStrToBool( str ) {
 }
 
 ; Correct option types
+OptReticleOffset_Y := OptReticleOffset_Y + 0 ; Int
+OptReticleOffset_X := OptReticleOffset_X + 0 ; Int
+OptRecenterCursor := IniStrToBool(OptRecenterCursor) ; Bool
 OptUpdateInterval := OptUpdateInterval + 0 ; Int
-OptAlternateDetectionMode := IniStrToBool(OptAlternateDetectionMode) ; Bool
-OptAlternateDetectionModeTolerance := OptAlternateDetectionModeTolerance + 0 ; Int
 DEBUG := IniStrToBool(DEBUG) ; Bool
 
 ; Write out options to initialize any missing defaults
 IniWrite, %Left_Click%, %optfile%, MouseActions, Left_Click
 IniWrite, %Right_Click%, %optfile%, MouseActions, Right_Click
 IniWrite, %Middle_Click%, %optfile%, MouseActions, Middle_Click
+IniWrite, %OptReticleOffset_Y%, %optfile%, ReticlePosition, ReticleOffset_Y
+IniWrite, %OptReticleOffset_X%, %optfile%, ReticlePosition, ReticleOffset_X
+IniWrite, %OptRecenterCursor%, %optfile%, Tweaks, RecenterCursor
 IniWrite, %OptUpdateInterval%, %optfile%, Tweaks, UpdateInterval
-IniWrite, %OptAlternateDetectionMode%, %optfile%, Tweaks, AlternateDetectionMode
-IniWrite, %OptAlternateDetectionModeTolerance%, %optfile%, Tweaks, AlternateDetectionModeTolerance
 IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
 
-; Useless for now
-ReticleOffset_X := 0
-ReticleOffset_Y := 0
-
-DebugPrint( params* ) {
+DebugPrint( params* )
+{
   global DEBUG
   if (DEBUG) {
     if (params.MaxIndex() > 1) {
@@ -68,56 +69,24 @@ DebugPrint( params* ) {
   }
 }
 
-HexStr( hex ) {
-  SetFormat, IntegerFast, Hex
-  str := hex . ""
-  SetFormat, IntegerFast, D
-  return hex . ""
+IsCursorVisible()
+{
+  NumPut(VarSetCapacity(CurrentCursorStruct, A_PtrSize + 16), CurrentCursorStruct, "uInt")
+  DllCall("GetCursorInfo", "ptr", &CurrentCursorStruct)
+  if (NumGet(CurrentCursorStruct, 8) <> 0)
+    return true
+  return false
 }
 
-; 0 = Invalid
-; 1 = black (Inactive)
-; 2 = green (Lock active and clean)
-; 3 = blue (Lock active, needs reposition)
-GetPixelStatus( x, y ) {
-  global DEBUG
-  global OptAlternateDetectionMode
-  global OptAlternateDetectionModeTolerance
-  if (OptAlternateDetectionMode) {
-    PixelSearch, , , x, y, x, y, 0x00FF00, %OptAlternateDetectionModeTolerance%, Fast
-    if (ErrorLevel == 0)
-      return 2
-    PixelSearch, , , x, y, x, y, 0xFF0000, %OptAlternateDetectionModeTolerance%, Fast
-    if (ErrorLevel == 0)
-      return 3
-    PixelSearch, , , x, y, x, y, 0x000000, %OptAlternateDetectionModeTolerance%, Fast
-    if (ErrorLevel == 0)
-      return 1
-  } else {
-    PixelGetColor, color, x, y
-    if (color == 0x00FF00) ; 0x003400
-      return 2
-    if (color == 0xFF0000)
-      return 3
-    else if (color == 0x000000)
-      return 1
-  }
-  if (DEBUG) {
-    PixelGetColor, color, x, y
-    DebugPrint("[ERROR] GetPixelStatus failed (x, y, color found, (green), (black))", x, y, HexStr(color), "0x00FF00", "0x000000")
-  }
-  return 0
-}
-
-
-LockCursor( Activate=false, Offset=5 ) {
-  global ReticleOffset_Y
-  global ReticleOffset_X
-  if Activate {
+LockCursor( activate=false, offset=5 )
+{
+  global OptReticleOffset_Y
+  global OptReticleOffset_X
+  if (activate) {
     WinGetPos, x, y, w, h, ahk_group wildstar
-    x1 := x + round(w/2 + ReticleOffset_X)
-    y1 := y + round(h/2 + ReticleOffset_Y)
-    VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
+    x1 := x + round(w/2 + OptReticleOffset_X)
+    y1 := y + round(h/2 + OptReticleOffset_Y)
+    VarSetCapacity(R,16,0),  NumPut(x1-offset,&R+0),NumPut(y1-offset,&R+4),NumPut(x1+offset,&R+8),NumPut(y1+offset,&R+12)
     DllCall( "ClipCursor", UInt, &R )
   } else
     DllCall( "ClipCursor", UInt, 0 )
@@ -143,8 +112,6 @@ state := false
 ; Intent is the assumed state the game is in while tabbed out
 intent := false
 
-borderless := true
-
 ; State update timer
 SetTimer, UpdateState, %OptUpdateInterval%
 SetTimer, UpdateState, Off
@@ -159,23 +126,10 @@ Loop {
       DebugPrint("[ALT-TAB] Relocking")
     }
     
-    ; Update window type
-    WinGet, style, Style
-    borderless := (NOT style & 0x800000)
-
-    ; Activate color polling
+    ; Activate polling
     SetTimer, UpdateState, On
-    
-    ; Make sure we find the pixel
-    if (borderless)
-      pixel_status := GetPixelStatus(1, 1)
-    else
-      pixel_status := GetPixelStatus(8, 31)
-    if (pixel_status == 0) {
-      DebugPrint("[ERROR] Failed to find pixel on focus")
-    }
-    
-    DebugPrint("[WINDOW] Active", borderless ? "Borderless" : "Normal window")
+
+    DebugPrint("[WINDOW] Active")
     
     ; Wait for unfocus
     WinWaitNotActive, ahk_group wildstar
@@ -200,44 +154,32 @@ UpdateState:
     return
   }
   
-  ; Check pixel status
-  if (borderless)
-    pixel_status := GetPixelStatus(1, 1)
-  else
-    pixel_status := GetPixelStatus(8, 31)
-  
-  ; Act on status
-  if (pixel_status == 2) { ; Green
-    if (state == false) {
+  if (IsCursorVisible()) {
+    if (state)
+      DebugPrint("[STATE] Change: Off")
+    LockCursor()
+    state := false
+    intent := false
+
+  } else {
+    if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton")) {
       DebugPrint("[STATE] Change: On")
+      ; Send release signal
+      ControlSend, , {F8}, ahk_group wildstar
+      Sleep, 10
+      ; Forcefully recenter cursor, possibly redundant
+      WinGetPos, x, y, w, h
+      DllCall("SetCursorPos", int, w/2 + 5 + OptReticleOffset_X, int, h/2 + OptReticleOffset_Y)
+      ; Wait for wildstar to detect and release mouselock
+      Sleep, 20
+      ; Re-lock mouse
+      ControlSend, , {F7}, ahk_group wildstar
       ; Lock loosely to prevent it leaving the screen
       ; but allowing it to feel responsive while unlocking
       LockCursor(true, 300)
     }
     state := true
     intent := true
-  } else if (pixel_status == 3) { ; Blue, recenter cursor
-    DebugPrint("[FIX] Recentering cursor")
-    state := false
-    ; Lock cursor so movement doesn't disrupt it
-    ;LockCursor(true)
-    ; Send release signal
-    ControlSend, , {F8}, ahk_group wildstar
-    Sleep, 10
-    ; Forcefully recenter cursor, possibly redundant
-    WinGetPos, x, y, w, h
-    DllCall("SetCursorPos", int, w/2 + 5 + ReticleOffset_X, int, h/2 + ReticleOffset_Y)
-    ; Wait for wildstar to detect and release mouselock
-    Sleep, 20
-    ; Re-lock mouse (Confirming clean)
-    ControlSend, , {F9}
-  } else { ; Black, release cursor
-    if (state) {
-      DebugPrint("[STATE] Change: Off")
-    }
-    LockCursor()
-    state := false
-    intent := false
   }
 return
 
