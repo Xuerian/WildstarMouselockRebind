@@ -51,7 +51,8 @@ IniWrite, %OptRecenterCursor%, %optfile%, Tweaks, RecenterCursor
 IniWrite, %OptUpdateInterval%, %optfile%, Tweaks, UpdateInterval
 IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
 
-DebugPrint( params* ) {
+DebugPrint( params* )
+{
   global DEBUG
   if (DEBUG) {
     if (params.MaxIndex() > 1) {
@@ -68,7 +69,8 @@ DebugPrint( params* ) {
   }
 }
 
-IsCursorVisible() {
+IsCursorVisible()
+{
   NumPut(VarSetCapacity(CurrentCursorStruct, A_PtrSize + 16), CurrentCursorStruct, "uInt")
   DllCall("GetCursorInfo", "ptr", &CurrentCursorStruct)
   if (NumGet(CurrentCursorStruct, 8) <> 0)
@@ -76,14 +78,15 @@ IsCursorVisible() {
   return false
 }
 
-LockCursor( Activate=false, Offset=5 ) {
+LockCursor( activate=false, offset=5 )
+{
   global OptReticleOffset_Y
   global OptReticleOffset_X
-  if Activate {
+  if (activate) {
     WinGetPos, x, y, w, h, ahk_group wildstar
     x1 := x + round(w/2 + OptReticleOffset_X)
     y1 := y + round(h/2 + OptReticleOffset_Y)
-    VarSetCapacity(R,16,0),  NumPut(x1-Offset,&R+0),NumPut(y1-Offset,&R+4),NumPut(x1+Offset,&R+8),NumPut(y1+Offset,&R+12)
+    VarSetCapacity(R,16,0),  NumPut(x1-offset,&R+0),NumPut(y1-offset,&R+4),NumPut(x1+offset,&R+8),NumPut(y1+offset,&R+12)
     DllCall( "ClipCursor", UInt, &R )
   } else
     DllCall( "ClipCursor", UInt, 0 )
