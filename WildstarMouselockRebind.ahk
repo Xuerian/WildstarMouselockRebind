@@ -51,18 +51,14 @@ IniWrite, %OptRecenterCursor%, %optfile%, Tweaks, RecenterCursor
 IniWrite, %OptUpdateInterval%, %optfile%, Tweaks, UpdateInterval
 IniWrite, %DEBUG%, %optfile%, Tweaks, DEBUG
 
-DebugPrint( params* )
+print( str, tag="", prefix="" )
 {
   global DEBUG
   if (DEBUG) {
-    if (params.MaxIndex() > 1) {
-      str := ""
-      for index,param in params
-        str .= param . ", "
-      str := SubStr(str, 1, -2)
-    } else
-      str := params[1]
-
+    if (prefix)
+      str := prefix . ": " . str
+    if (tag)
+      str := "[" . tag . "] " . str
     FileAppend, %A_Now%  %str%`n, %A_Desktop%\MouselockRebind_debug.txt
     if (ErrorLevel == 1)
       MsgBox Could not write to %A_Desktop%\MouselockRebind_debug.txt    
@@ -105,7 +101,7 @@ Menu, Tray, Default, Settings
 if (DEBUG)
   FileDelete, %A_Desktop%\MouselockRebind_debug.txt
 
-DebugPrint("Starting up")
+print("Starting up", "LOG")
 
 ; State is the current reading of the in-game indicator pixel
 state := false
@@ -123,13 +119,13 @@ Loop {
     ; Resume lock when refocused after automatically unlocking
     if (state == false && intent == true) {
       ControlSend, , {F7}, ahk_group wildstar
-      DebugPrint("[ALT-TAB] Relocking")
+      print("Relocking", "ALT-TAB")
     }
     
     ; Activate polling
     SetTimer, UpdateState, On
 
-    DebugPrint("[WINDOW] Active")
+    print("Active", "WINDOW")
     
     ; Wait for unfocus
     WinWaitNotActive, ahk_group wildstar
@@ -145,9 +141,9 @@ UpdateState:
   if not WinActive("ahk_group wildstar") {
     if (state) {
       ControlSend, , {F8}, ahk_group wildstar
-      DebugPrint("[ALT-TAB] Unlocking")
+      print("Unlocking", "ALT-TAB")
     }
-    DebugPrint("[WINDOW] Inactive")
+    print("Inactive", "WINDOW")
     state := false
     SetTimer, UpdateState, Off
     LockCursor()
@@ -156,14 +152,14 @@ UpdateState:
   
   if (IsCursorVisible()) {
     if (state)
-      DebugPrint("[STATE] Change: Off")
+      print("Change: Off", "WINDOW")
     LockCursor()
     state := false
     intent := false
 
   } else {
     if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton")) {
-      DebugPrint("[STATE] Change: On")
+      print("Change: On", "STATE")
       ; Send release signal
       ControlSend, , {F8}, ahk_group wildstar
       Sleep, 10
