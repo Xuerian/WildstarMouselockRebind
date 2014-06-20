@@ -86,13 +86,14 @@ ReadConfig()
       local value := node.GetAttribute("V")
 
       if (vtype == "n")
-        %key% := value + 0.0
+        %key% := value + 0
       else if (vtype == "b")
         %key% := (value == "+")
       else
         %key% := value
     }
   }
+
   if (DEBUG) {
     print(free_with_shift, "OPTION", "free_with_shift")
     print(free_with_ctrl, "OPTION", "free_with_ctrl")
