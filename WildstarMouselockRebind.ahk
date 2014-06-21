@@ -219,16 +219,18 @@ UpdateState:
   } else {
     if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton")) {
       print("Change: On", "STATE")
-      ; Send release signal
-      ControlSend, , {F8}, ahk_group wildstar
-      Sleep, 10
-      ; Forcefully recenter cursor, possibly redundant
-      WinGetPos, x, y, w, h
-      DllCall("SetCursorPos", int, w/2 + 5 + reticle_offset_x, int, h/2 + reticle_offset_y)
-      ; Wait for wildstar to detect and release mouselock
-      Sleep, 20
-      ; Re-lock mouse
-      ControlSend, , {F7}, ahk_group wildstar
+      if (ahk_cursor_center) {
+        ; Send release signal
+        ControlSend, , {F8}, ahk_group wildstar
+        Sleep, 10
+        ; Forcefully recenter cursor, possibly redundant
+        WinGetPos, x, y, w, h
+        DllCall("SetCursorPos", int, w/2 + 5 + reticle_offset_x, int, h/2 + reticle_offset_y)
+        ; Wait for wildstar to detect and release mouselock
+        Sleep, 20
+        ; Re-lock mouse
+        ControlSend, , {F7}, ahk_group wildstar
+      }
       ; Lock loosely to prevent it leaving the screen
       ; but allowing it to feel responsive while unlocking
       LockCursor(true, 300)
