@@ -225,7 +225,8 @@ UpdateState:
         Sleep, 10
         ; Forcefully recenter cursor, possibly redundant
         WinGetPos, x, y, w, h
-        DllCall("SetCursorPos", int, w/2 + 5 + reticle_offset_x, int, h/2 + reticle_offset_y)
+        DllCall("SetCursorPos", int, w/2 - 5 + reticle_offset_x, int, h/2 + reticle_offset_y)
+        LockCursor(true, 5)
         ; Wait for wildstar to detect and release mouselock
         Sleep, 20
         ; Re-lock mouse
