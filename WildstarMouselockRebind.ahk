@@ -155,7 +155,7 @@ SetTimer, UpdateState, %ahk_update_interval%
 SetTimer, UpdateState, Off
 
 ; Config refresh timer
-SetTimer, GetConfig, 30000
+SetTimer, GetConfig, 10000
 SetTimer, GetConfig, Off
 
 ; Timer control and alt-tab locking/unlocking
@@ -170,7 +170,7 @@ Loop {
     
     ; Activate polling
     SetTimer, UpdateState, On
-    SetTimer, GetConfig, On
+    ; SetTimer, GetConfig, On
 
     ; Reload settings
     ReadConfig()
@@ -180,7 +180,7 @@ Loop {
     ; Wait for unfocus
     WinWaitNotActive, ahk_group wildstar
     {
-      SetTimer, GetConfig, Off
+      ; SetTimer, GetConfig, Off
     }
   }
 }
