@@ -94,6 +94,8 @@ ReadConfig()
     }
   }
 
+  SetTimer, UpdateState, %ahk_update_interval%
+
   if (DEBUG) {
     print(free_with_shift, "OPTION", "free_with_shift")
     print(free_with_ctrl, "OPTION", "free_with_ctrl")
@@ -151,7 +153,6 @@ state := false
 intent := false
 
 ; State update timer
-SetTimer, UpdateState, %ahk_update_interval%
 SetTimer, UpdateState, Off
 
 ; Config refresh timer
