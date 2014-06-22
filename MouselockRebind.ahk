@@ -217,7 +217,7 @@ UpdateState:
   
   if (IsCursorVisible()) {
     if (state)
-      print("Change: Off", "WINDOW")
+      print("Change: Off", "STATE")
     LockCursor()
     state := false
     intent := false
