@@ -269,10 +269,10 @@ return
   }
   else {
     SetTimer, UpdateState, Off
-    SetTimer, ClickDelay, 50
     Send, {blind}{LButton Down}
     KeyWait, LButton
     Send, {blind}{LButton Up}
+    SetTimer, ClickDelay, 50
   }
 return
 
@@ -284,10 +284,10 @@ return
   }
   else {
     SetTimer, UpdateState, Off
-    SetTimer, ClickDelay, 50
     Send, {blind}{RButton Down}
     KeyWait, RButton
     Send, {blind}{RButton Up}
+    SetTimer, ClickDelay, 50
   }
 return
 
