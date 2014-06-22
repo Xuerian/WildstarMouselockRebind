@@ -196,6 +196,11 @@ GetConfig:
 return
 
 ; Cursor state polling
+ClickDelay:
+  SetTimer, UpdateState, On
+  SetTimer, ClickDelay, Off
+return
+
 UpdateState:
   ; Release and disable if not focused
   if not WinActive("ahk_group wildstar") {
@@ -263,6 +268,8 @@ return
     Send, {blind}{%ahk_lmb% Up}
   }
   else {
+    SetTimer, UpdateState, Off
+    SetTimer, ClickDelay, 50
     Send, {blind}{LButton Down}
     KeyWait, LButton
     Send, {blind}{LButton Up}
@@ -276,6 +283,8 @@ return
     Send, {blind}{%ahk_rmb% Up}
   }
   else {
+    SetTimer, UpdateState, Off
+    SetTimer, ClickDelay, 50
     Send, {blind}{RButton Down}
     KeyWait, RButton
     Send, {blind}{RButton Up}
