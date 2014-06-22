@@ -235,13 +235,13 @@ UpdateState:
         LockCursor(true, 5)
         ; Re-lock mouse
         ControlSend, , {F7}, ahk_group wildstar
+        ; Lock loosely to prevent it leaving the screen
+        ; but allowing it to feel responsive while unlocking
+        LockCursor(true, 300)
       }
-      ; Lock loosely to prevent it leaving the screen
-      ; but allowing it to feel responsive while unlocking
-      LockCursor(true, 300)
+      state := true
+      intent := true
     }
-    state := true
-    intent := true
   }
 return
 
