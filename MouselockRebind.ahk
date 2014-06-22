@@ -199,6 +199,7 @@ return
 ClickDelay:
   SetTimer, UpdateState, On
   SetTimer, ClickDelay, Off
+  ControlSend, , {F8}, ahk_group wildstar
 return
 
 UpdateState:
@@ -272,6 +273,8 @@ return
     Send, {blind}{LButton Down}
     KeyWait, LButton
     Send, {blind}{LButton Up}
+    state := false
+    intent := false
     SetTimer, ClickDelay, 50
   }
 return
@@ -287,6 +290,8 @@ return
     Send, {blind}{RButton Down}
     KeyWait, RButton
     Send, {blind}{RButton Up}
+    state := false
+    intent := false
     SetTimer, ClickDelay, 50
   }
 return
