@@ -199,13 +199,18 @@ GetConfig:
   ReadConfig()
 return
 
-; Cursor state polling
+; Because we're not perfect.
 ClickDelay:
   SetTimer, UpdateState, On
   SetTimer, ClickDelay, Off
-  ControlSend, , {vkF2}, ahk_group wildstar
+  if (state) {
+    ControlSend, , {vkF2}, ahk_group wildstar
+    state := false
+    intent := false
+  }
 return
 
+; Cursor state polling
 UpdateState:
   ; Release and disable if not focused
   if not WinActive("ahk_group wildstar") {
