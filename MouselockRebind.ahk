@@ -165,7 +165,7 @@ Loop {
   {
     ; Resume lock when refocused after automatically unlocking
     if (state == false && intent == true) {
-      ControlSend, , {F7}, ahk_group wildstar
+      ControlSend, , {vkF1}, ahk_group wildstar
       print("Relocking", "ALT-TAB")
     }
     
@@ -199,14 +199,14 @@ return
 ClickDelay:
   SetTimer, UpdateState, On
   SetTimer, ClickDelay, Off
-  ControlSend, , {F8}, ahk_group wildstar
+  ControlSend, , {vkF2}, ahk_group wildstar
 return
 
 UpdateState:
   ; Release and disable if not focused
   if not WinActive("ahk_group wildstar") {
     if (state) {
-      ControlSend, , {F8}, ahk_group wildstar
+      ControlSend, , {vkF2}, ahk_group wildstar
       print("Unlocking", "ALT-TAB")
     }
     print("Inactive", "WINDOW")
@@ -228,14 +228,14 @@ UpdateState:
       print("Change: On", "STATE")
       if (ahk_cursor_center) {
         ; Send release signal
-        ControlSend, , {F8}, ahk_group wildstar
+        ControlSend, , {vkF2}, ahk_group wildstar
         Sleep, 10
         ; Forcefully recenter cursor, possibly redundant
         WinGetPos, x, y, w, h
         DllCall("SetCursorPos", int, w/2 - 5 + reticle_offset_x, int, h/2 + reticle_offset_y)
         LockCursor(true, 5)
         ; Re-lock mouse
-        ControlSend, , {F7}, ahk_group wildstar
+        ControlSend, , {vkF1}, ahk_group wildstar
         ; Lock loosely to prevent it leaving the screen
         ; but allowing it to feel responsive while unlocking
         LockCursor(true, 300)
