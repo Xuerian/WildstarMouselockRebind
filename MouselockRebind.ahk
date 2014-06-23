@@ -152,6 +152,8 @@ state := false
 ; Intent is the assumed state the game is in while tabbed out
 intent := false
 
+uid := false
+
 ; State update timer
 SetTimer, UpdateState, Off
 
@@ -168,6 +170,8 @@ Loop {
       ControlSend, , {vkF1}, ahk_group wildstar
       print("Relocking", "ALT-TAB")
     }
+
+    uid := WinExist()
     
     ; Activate polling
     SetTimer, UpdateState, On
@@ -269,13 +273,24 @@ return
     Send, {blind}{%ahk_lmb% Up}
   }
   else {
-    SetTimer, UpdateState, Off
-    Send, {blind}{LButton Down}
-    KeyWait, LButton
-    Send, {blind}{LButton Up}
     state := false
-    intent := false
-    SetTimer, ClickDelay, 50
+    MouseGetPos, , , over_uid
+    ; This is annoying, but is this way because 
+    ; some windows like Teamspeak3 do not focus
+    ; directly out of wildstar otherwise.
+    if (over_uid == uid) {
+      SetTimer, UpdateState, Off
+      intent := false
+      Send, {blind}{LButton Down}
+      KeyWait, LButton
+      Send, {blind}{LButton Up}
+      SetTimer, ClickDelay, 50
+    } else {
+      WinActivate, ahk_id %over_uid%
+      Send, {blind}{LButton Down}
+      KeyWait, LButton
+      Send, {blind}{LButton Up}
+    }
   }
 return
 
@@ -286,13 +301,21 @@ return
     Send, {blind}{%ahk_rmb% Up}
   }
   else {
-    SetTimer, UpdateState, Off
-    Send, {blind}{RButton Down}
-    KeyWait, RButton
-    Send, {blind}{RButton Up}
     state := false
-    intent := false
-    SetTimer, ClickDelay, 50
+    MouseGetPos, , , over_uid
+    if (over_uid == uid) {
+      SetTimer, UpdateState, Off
+      intent := false
+      Send, {blind}{RButton Down}
+      KeyWait, RButton
+      Send, {blind}{RButton Up}
+      SetTimer, ClickDelay, 50
+    } else {
+      WinActivate, ahk_id %over_uid%
+      Send, {blind}{RButton Down}
+      KeyWait, RButton
+      Send, {blind}{RButton Up}
+    }
   }
 return
 
