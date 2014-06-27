@@ -3,6 +3,8 @@
 ;
 ; Please change all options in MouselockRebind_Options.ini after script is run
 ;
+; NO EDITS OF THIS FILE ARE NECESSARY ANY MORE.
+;
 ; Checks visibility of mouse cursor to determine lock status
 ; Provides cursor re-centering and locking of cursor to screen, otherwise it would be much simpler.
 
@@ -51,7 +53,7 @@ print( str, tag="", prefix="" )
 }
 
 XMLDoc := ComObjCreate("MSXML2.DOMDocument.6.0")
-XMLDoc.async := false
+XMLDoc.async := false ; UPGRADE AUTOHOTKEY FROM WWW.AHKSCRIPT.ORG
 
 ReadConfig()
 {
@@ -151,7 +153,7 @@ ReadConfig()
 state := false
 ; Intent is the assumed state the game is in while tabbed out
 intent := false
-
+; UID of Wildstar window for us to check against when clicking outside of wildstar
 uid := false
 
 ; State update timer
@@ -171,6 +173,7 @@ Loop {
       print("Relocking", "ALT-TAB")
     }
 
+    ; Update UID for click checks
     uid := WinExist()
     
     ; Activate polling
@@ -225,6 +228,7 @@ UpdateState:
     return
   }
   
+  ; Cursor visible, unlock
   if (IsCursorVisible()) {
     if (state)
       print("Change: Off", "STATE")
@@ -232,6 +236,7 @@ UpdateState:
     state := false
     intent := false
 
+  ; Cursor not visible, determine if we should lock
   } else {
     if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton")) {
       print("Change: On", "STATE")
