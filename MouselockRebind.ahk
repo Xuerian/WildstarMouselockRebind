@@ -1,9 +1,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; MouselockRebind
 ;
-; Please change all options in MouselockRebind_Options.ini after script is run
-;
 ; NO EDITS OF THIS FILE ARE NECESSARY ANY MORE.
+; CONFIGURE THIS SCRIPT VIA LOCKDOWN OPTIONS IN GAME
 ;
 ; Checks visibility of mouse cursor to determine lock status
 ; Provides cursor re-centering and locking of cursor to screen, otherwise it would be much simpler.
