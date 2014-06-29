@@ -237,7 +237,8 @@ UpdateState:
 
   ; Cursor not visible, determine if we should lock
   } else {
-    if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton")) {
+    MouseGetPos, , , over_uid
+    if (state == false and not GetKeyState("LButton") and not GetKeyState("RButton") and over_uid == uid) {
       print("Change: On", "STATE")
       if (ahk_cursor_center) {
         ; Send release signal
@@ -282,24 +283,13 @@ return
     Send, {blind}{%ahk_lmb% Up}
   }
   else {
+    SetTimer, UpdateState, Off
+    Send, {blind}{LButton Down}
+    KeyWait, LButton
+    Send, {blind}{LButton Up}
     state := false
-    MouseGetPos, , , over_uid
-    ; This is annoying, but is this way because 
-    ; some windows like Teamspeak3 do not focus
-    ; directly out of wildstar otherwise.
-    if (over_uid == uid) {
-      SetTimer, UpdateState, Off
-      intent := false
-      Send, {blind}{LButton Down}
-      KeyWait, LButton
-      Send, {blind}{LButton Up}
-      SetTimer, ClickDelay, 50
-    } else {
-      WinActivate, ahk_id %over_uid%
-      Send, {blind}{LButton Down}
-      KeyWait, LButton
-      Send, {blind}{LButton Up}
-    }
+    intent := false
+    SetTimer, ClickDelay, 50
   }
 return
 
@@ -310,21 +300,13 @@ return
     Send, {blind}{%ahk_rmb% Up}
   }
   else {
+    SetTimer, UpdateState, Off
+    Send, {blind}{RButton Down}
+    KeyWait, RButton
+    Send, {blind}{RButton Up}
     state := false
-    MouseGetPos, , , over_uid
-    if (over_uid == uid) {
-      SetTimer, UpdateState, Off
-      intent := false
-      Send, {blind}{RButton Down}
-      KeyWait, RButton
-      Send, {blind}{RButton Up}
-      SetTimer, ClickDelay, 50
-    } else {
-      WinActivate, ahk_id %over_uid%
-      Send, {blind}{RButton Down}
-      KeyWait, RButton
-      Send, {blind}{RButton Up}
-    }
+    intent := false
+    SetTimer, ClickDelay, 50
   }
 return
 
