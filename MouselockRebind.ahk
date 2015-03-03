@@ -17,7 +17,7 @@ GroupAdd, wildstar, ahk_exe Wildstar.exe
 GroupAdd, wildstar, ahk_exe Wildstar64.exe
 
 
-DEBUG := false ;;;; Change this false to true if told.
+DEBUG := false ;;;; Change this   false   to   true   if told.
 
 
 LockdownConfigFile := A_AppData . "\NCSoft\WildStar\AddonSaveData\Lockdown_0_Gen.xml"
