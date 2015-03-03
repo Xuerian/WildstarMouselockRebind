@@ -141,6 +141,7 @@ if FileExist(A_ScriptDir . "\wildstar_icon.ico") {
 Menu, Tray, NoStandard
 Menu, Tray, Add, Reload, ReloadScript
 Menu, Tray, Add, Edit Script, EditScript
+Menu, Tray, Add, Pause Script, PauseScript
 Menu, Tray, Add, Exit, ExitScript
 Menu, Tray, Default, Reload
 
@@ -277,6 +278,10 @@ return
 EditScript:
   RunWait, notepad %A_ScriptFullPath%
   Reload
+return
+
+PauseScript:
+  Pause, Toggle
 return
 
 ExitScript:
